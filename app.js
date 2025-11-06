@@ -1,4 +1,6 @@
-// app.js - small client-side data & UI
+// app.js - polished UI behavior (keeps same sample data + interactions)
+// This file expects the improved HTML structure (ids: cards, searchInput, categorySelect, sortSelect, offerBtn, darkToggle, sendBtn)
+
 const sampleData = [
   {id:1,name:"Aisha",skill:"Python basics",category:"Tech",price:300,rate:4.8,desc:"Intro to Python, 60 min hands-on",img:"https://i.pravatar.cc/100?img=32",distance:1.2},
   {id:2,name:"Rahul",skill:"Guitar (acoustic)",category:"Music",price:250,rate:4.7,desc:"Chords & strumming for beginners",img:"https://i.pravatar.cc/100?img=12",distance:2.5},
@@ -11,8 +13,6 @@ const sampleData = [
 
 const cardsEl = document.getElementById('cards');
 const searchInput = document.getElementById('searchInput');
-const quickSearch = document.getElementById('quickSearch');
-const quickBtn = document.getElementById('quickBtn');
 const categorySelect = document.getElementById('categorySelect');
 const sortSelect = document.getElementById('sortSelect');
 const yearEl = document.getElementById('year');
@@ -25,20 +25,18 @@ let currentPage = 1;
 const PAGE_SIZE = 6;
 
 function render(){
-  const q = searchInput.value.trim().toLowerCase();
-  const cat = categorySelect.value;
+  const q = (searchInput && searchInput.value || '').trim().toLowerCase();
+  const cat = (categorySelect && categorySelect.value) || 'all';
   let filtered = sampleData.filter(s=>{
     if(cat !== 'all' && s.category !== cat) return false;
     if(!q) return true;
     return (s.skill+s.name+s.desc).toLowerCase().includes(q);
   });
 
-  // sort
   const sort = sortSelect.value;
   if(sort === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
   else if(sort === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
 
-  // pagination
   const total = filtered.length;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   if(currentPage > pages) currentPage = pages;
@@ -46,8 +44,11 @@ function render(){
   const pageItems = filtered.slice(start, start+PAGE_SIZE);
 
   cardsEl.innerHTML = '';
-  if(pageItems.length === 0) {
-    cardsEl.innerHTML = `<div class="card"><p>No results found — try a different search.</p></div>`;
+  if(pageItems.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'card';
+    empty.innerHTML = `<p>No results found — try a different search.</p>`;
+    cardsEl.appendChild(empty);
   } else {
     pageItems.forEach(item => {
       const card = document.createElement('article');
@@ -67,8 +68,8 @@ function render(){
             <strong>₹${item.price}</strong> • ${item.rate}⭐ • ${item.distance} km
           </div>
           <div style="margin-left:auto;display:flex;gap:.4rem">
-            <button class="btn" onclick="showProfile(${item.id})">View</button>
-            <button class="favorite" aria-pressed="${favorites.includes(item.id)}" onclick="toggleFav(${item.id},this)">${favorites.includes(item.id) ? '★' : '☆'}</button>
+            <button class="btn" aria-label="View ${item.name}" onclick="showProfile(${item.id})">View</button>
+            <button class="favorite" aria-pressed="${favorites.includes(item.id)}" onclick="toggleFav(${item.id}, this)">${favorites.includes(item.id) ? '★' : '☆'}</button>
           </div>
         </div>
       `;
@@ -76,7 +77,7 @@ function render(){
     });
   }
 
-  // pagination controls
+  // pagination
   paginationEl.innerHTML = '';
   for(let i=1;i<=pages;i++){
     const b = document.createElement('button');
@@ -88,14 +89,15 @@ function render(){
   }
 }
 
-// small UI helpers
 window.showProfile = function(id){
   const p = sampleData.find(x=>x.id===id);
   if(!p) return;
-  alert(`${p.name} — ${p.skill}\n\n${p.desc}\n\nPrice: ₹${p.price}/hr\nRating: ${p.rate}`);
+  const msg = `${p.name} — ${p.skill}\n\n${p.desc}\n\nPrice: ₹${p.price}/hr\nRating: ${p.rate}`;
+  // nicer modal-like behavior could be implemented later; for demo we use alert
+  alert(msg);
 }
 
-window.toggleFav = function(id,btn){
+window.toggleFav = function(id, btn){
   const idx = favorites.indexOf(id);
   if(idx === -1){
     favorites.push(id);
@@ -109,12 +111,12 @@ window.toggleFav = function(id,btn){
   localStorage.setItem('ss_fav', JSON.stringify(favorites));
 }
 
-// events
-searchInput.addEventListener('input', ()=>{ currentPage=1; render(); });
-quickBtn.addEventListener('click', ()=>{ searchInput.value = quickSearch.value; currentPage=1; render(); });
-categorySelect.addEventListener('change', ()=>{ currentPage=1; render(); });
-sortSelect.addEventListener('change', ()=>{ currentPage=1; render(); });
-document.getElementById('sendBtn').addEventListener('click', ()=>{
+// event bindings
+if(searchInput) searchInput.addEventListener('input', ()=>{ currentPage=1; render(); });
+if(categorySelect) categorySelect.addEventListener('change', ()=>{ currentPage=1; render(); });
+if(sortSelect) sortSelect.addEventListener('change', ()=>{ currentPage=1; render(); });
+
+document.getElementById('sendBtn')?.addEventListener('click', ()=>{
   const email = document.getElementById('email').value;
   const message = document.getElementById('message').value;
   if(!email || !message) { alert('Please fill both fields.'); return; }
@@ -122,14 +124,14 @@ document.getElementById('sendBtn').addEventListener('click', ()=>{
   window.location.href = mailto;
 });
 
-// dark mode
+// dark mode toggle
 darkToggle.addEventListener('click', ()=>{
   const isDark = document.documentElement.classList.toggle('dark');
   darkToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
   localStorage.setItem('ss_dark', isDark ? '1' : '0');
 });
 
-// Offer a skill (demo)
+// Offer a skill (quick demo)
 offerBtn.addEventListener('click', ()=>{
   const name = prompt('Your name');
   const skill = prompt('Skill you offer (e.g., "Photoshop intro")');
