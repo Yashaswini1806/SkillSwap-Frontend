@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SkillSwap — Local Skill Exchange</title>
+  <meta name="description" content="SkillSwap — exchange short lessons & services with people near you. Responsive demo built with HTML/CSS/JS." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#">SkillSwap</a>
+      <nav class="top-nav" aria-label="Main navigation">
+        <button id="darkToggle" aria-pressed="false" title="Toggle dark mode">🌙</button>
+        <a class="cta" href="#browse">Browse Skills</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1>Learn something new. Teach what you know.</h1>
+          <p>SkillSwap helps students and local creators trade short lessons, help and micro-services — build connections and practical skills in your neighborhood.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#browse">Find Skills</a>
+            <button class="btn ghost" id="offerBtn">Offer a Skill</button>
+          </div>
+          <ul class="trust">
+            <li>Fast matches</li>
+            <li>No backend required (demo)</li>
+            <li>Mobile friendly</li>
+          </ul>
+        </div>
+        <div class="hero-card" aria-hidden="false">
+          <div class="small-search">
+            <input id="quickSearch" placeholder="Search skills, e.g., 'Python', 'Guitar'" />
+            <button id="quickBtn">Search</button>
+          </div>
+          <div class="sample-profile">
+            <img src="https://via.placeholder.com/80" alt="Sample profile avatar" />
+            <div>
+              <strong>Aisha</strong>
+              <span>Python basics • ₹300/hr</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="container features">
+      <h2>How it helps</h2>
+      <div class="feature-grid">
+        <article>
+          <h3>Quick Matches</h3>
+          <p>Find the nearest person offering the skill you need in under 10 seconds.</p>
+        </article>
+        <article>
+          <h3>Micro-sessions</h3>
+          <p>Encourage short 30–60 minute lessons — perfect for busy students.</p>
+        </article>
+        <article>
+          <h3>Bookmarks</h3>
+          <p>Save interesting tutors to your local favorites (client-side demo).</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="browse" class="container browse">
+      <h2>Browse available skill swaps</h2>
+
+      <div class="controls">
+        <input id="searchInput" placeholder="Search skills or names..." />
+        <select id="categorySelect" aria-label="Filter by category">
+          <option value="all">All categories</option>
+          <option>Tech</option>
+          <option>Music</option>
+          <option>Design</option>
+          <option>Tutoring</option>
+          <option>Handyman</option>
+        </select>
+        <select id="sortSelect" aria-label="Sort results">
+          <option value="relevance">Most relevant</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+      </div>
+
+      <div id="cards" class="cards" role="list" aria-live="polite"></div>
+
+      <div class="pagination" id="pagination"></div>
+    </section>
+
+    <section class="container contact" id="contact">
+      <h2>Contact / Feedback</h2>
+      <p>This is a frontend-only demo — real deployments should wire a backend for authentication and messaging.</p>
+      <form id="contactForm" onsubmit="return false;">
+        <label>
+          Your email
+          <input type="email" id="email" required placeholder="you@example.com" />
+        </label>
+        <label>
+          Message
+          <textarea id="message" rows="3" required placeholder="Tell us what you think..."></textarea>
+        </label>
+        <div class="form-actions">
+          <button id="sendBtn" class="btn primary">Send (mailto)</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="container footer-cta">
+      <h3>Want to make this full-stack?</h3>
+      <p>Link up a simple Firebase/Auth + Firestore or Node/Express backend to store users and messages — great next-step for your resume.</p>
+      <a class="btn" href="#" id="learnMore">Roadmap for next steps</a>
+    </section>
+  </main>
+
+  <footer class="site-footer container">
+    <small>© <span id="year"></span> SkillSwap • Demo by you</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
